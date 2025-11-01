@@ -24,7 +24,9 @@ const InvoiceList = () => {
     ]);
     setInvoices(invoiceRes.data.invoices || []);
     setOrders(
-      orderRes.data.orders?.filter((o) => o.status === "Approved") || []
+      orderRes.data.orders?.filter(
+        (o) => o.status === "In-Transit" || o.status === "Approved"
+      ) || []
     );
   };
 
@@ -61,7 +63,16 @@ const InvoiceList = () => {
               <select
                 className="border p-2"
                 value={form.orderId}
-                onChange={(e) => setForm({ ...form, orderId: e.target.value })}
+                onChange={(e) => {
+                  const selectedOrder = orders.find(
+                    (o) => o.id === parseInt(e.target.value)
+                  );
+                  setForm({
+                    ...form,
+                    orderId: e.target.value,
+                    amount: selectedOrder.qty * selectedOrder.product.price,
+                  });
+                }}
                 required
               >
                 <option value="">Select Order</option>

@@ -9,10 +9,10 @@ export const createInvoice = async (req, res) => {
     const { orderId, amount, tax, waybillNo, fileUrl } = req.body;
     const userRole = req.user.role;
 
-    if (userRole !== "VENDOR")
+    if (userRole !== "VENDOR" && userRole !== "ADMIN")
       return res
         .status(403)
-        .json({ message: "Only vendors can upload invoices" });
+        .json({ message: "Only vendors and admins can upload invoices" });
 
     const order = await prisma.order.findUnique({
       where: { id: parseInt(orderId) },

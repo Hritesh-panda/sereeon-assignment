@@ -51,6 +51,16 @@ const PurchaseOrders = () => {
     fetchData();
   }, []);
 
+  const handleOrderChangeStatus = (id, status) => {
+    API.put(`/orders/status/${id}`, { status })
+      .then(() => {
+        fetchData();
+      })
+      .catch((err) => {
+        alert(err.response?.data?.message || "Error updating contract status");
+      });
+  };
+
   return (
     <div className="flex">
       <Sidebar />
@@ -95,16 +105,15 @@ const PurchaseOrders = () => {
                     <td>{o.status}</td>
                     <td>{o.createdAt?.split("T")[0]}</td>
                     {user.role === ROLES.VENDOR && o.status === "Pending" && (
-                      <td>
-                        {/* <button
+                      <td className="flex justify-center py-1">
+                        <button
                           onClick={() =>
-                            handleOrderChangeStatus(o.id, "InTransit")
+                            handleOrderChangeStatus(o.id, "Approved")
                           }
-                          className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 mr-2"
+                          className="bg-green-600 text-white px-3 py-1 rounded hover:bg-blue-700 mr-2"
                         >
-                          In Transit
-                        </button> */}
-
+                          Approve
+                        </button>
                         <button
                           onClick={() =>
                             handleOrderChangeStatus(o.id, "Rejected")

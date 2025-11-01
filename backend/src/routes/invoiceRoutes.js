@@ -11,7 +11,12 @@ import { authenticate, authorizeRoles } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 // 🟢 Vendor: Upload Invoice
-router.post("/", authenticate, authorizeRoles("VENDOR"), createInvoice);
+router.post(
+  "/",
+  authenticate,
+  authorizeRoles("VENDOR", "ADMIN"),
+  createInvoice
+);
 
 //  Admin: Update Invoice Status
 router.put(

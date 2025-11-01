@@ -108,7 +108,7 @@ function App() {
           <Route
             path="/invoices/:id"
             element={
-              <ProtectedRoute roles={["ADMIN"]}>
+              <ProtectedRoute roles={["ADMIN", "VENDOR", "CUSTOMER"]}>
                 <InvoiceView />
               </ProtectedRoute>
             }
