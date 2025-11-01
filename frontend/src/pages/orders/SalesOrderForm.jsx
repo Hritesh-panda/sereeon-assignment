@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 
 const SalesOrderForm = ({ form, setForm, handleCreate, contracts }) => {
+  const [selectedContract, setSelectedContract] = useState(null);
   return (
     <form
       onSubmit={handleCreate}
@@ -13,6 +14,7 @@ const SalesOrderForm = ({ form, setForm, handleCreate, contracts }) => {
           const selected = contracts.find(
             (c) => c.id === parseInt(e.target.value)
           );
+          setSelectedContract(selected);
           setForm({
             ...form,
             contractId: e.target.value,
@@ -37,6 +39,13 @@ const SalesOrderForm = ({ form, setForm, handleCreate, contracts }) => {
         onChange={(e) => setForm({ ...form, qty: e.target.value })}
         required
       />
+
+      {selectedContract && (
+        <div>
+          <p>Total Qty: {selectedContract?.totalQty}</p>
+          <p>Remaining Qty: {selectedContract?.balanceQty}</p>
+        </div>
+      )}
 
       <button
         type="submit"

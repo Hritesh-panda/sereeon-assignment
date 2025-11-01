@@ -96,14 +96,15 @@ const PurchaseOrders = () => {
                     <td>{o.createdAt?.split("T")[0]}</td>
                     {user.role === ROLES.VENDOR && o.status === "Pending" && (
                       <td>
-                        <button
+                        {/* <button
                           onClick={() =>
                             handleOrderChangeStatus(o.id, "InTransit")
                           }
                           className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 mr-2"
                         >
                           In Transit
-                        </button>
+                        </button> */}
+
                         <button
                           onClick={() =>
                             handleOrderChangeStatus(o.id, "Rejected")
