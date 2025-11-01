@@ -1,0 +1,160 @@
+// backend/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  name       String
+  email      String    @unique
+  password   String
+  contact    String?
+  role       Role
+  createdAt  DateTime  @default(now())
+
+  // Relations
+  contracts  Contract[]
+  orders     Order[]
+  paymentsAsPayer  Payment[] @relation("Payer")
+  paymentsAsPayee  Payment[] @relation("Payee")
+  ledgers    Ledger[]
+}
+
+enum Role {
+  ADMIN
+  VENDOR
+  CUSTOMER
+  TRANSPORT
+}
+
+model Product {
+  id         Int       @id @default(autoincrement())
+  name       String
+  sku        String    @unique
+  price      Float
+  unit       String
+  stock      Float     @default(0)
+
+  contracts  Contract[]
+  orders     Order[]
+}
+
+model Contract {
+  id           Int       @id @default(autoincrement())
+  type         ContractType
+  partyId      Int
+  productId    Int
+  totalQty     Float
+  balanceQty   Float
+  validityStart DateTime
+  validityEnd   DateTime
+  terms        String?
+  status       String   @default("Pending")
+
+  // Relations
+  party        User      @relation(fields: [partyId], references: [id])
+  product      Product   @relation(fields: [productId], references: [id])
+  orders       Order[]
+
+  createdAt    DateTime  @default(now())
+}
+
+enum ContractType {
+  SALES
+  PURCHASE
+}
+
+model Order {
+  id           Int       @id @default(autoincrement())
+  type         OrderType
+  contractId   Int
+  productId    Int
+  qty          Float
+  status       String    @default("Pending")
+  createdById  Int
+  createdAt    DateTime  @default(now())
+
+  // Relations
+  contract     Contract  @relation(fields: [contractId], references: [id])
+  product      Product   @relation(fields: [productId], references: [id])
+  createdBy    User      @relation(fields: [createdById], references: [id])
+  invoice      Invoice?
+  transport    Transport?
+  creditNote   CreditNote?
+}
+
+enum OrderType {
+  SALES
+  PURCHASE
+}
+
+model Invoice {
+  id          Int       @id @default(autoincrement())
+  orderId     Int       @unique 
+  type        String
+  amount      Float
+  tax         Float
+  fileUrl     String?
+  waybillNo   String?
+  status      String    @default("Pending")
+
+  // Relations
+  order       Order     @relation(fields: [orderId], references: [id])
+  payments    Payment[]
+}
+
+model CreditNote {
+  id             Int       @id @default(autoincrement())
+  orderId        Int       @unique 
+  reason         String?
+  amount         Float?
+  approvalStatus String?   @default("Pending")
+
+  order          Order     @relation(fields: [orderId], references: [id])
+}
+
+model Payment {
+  id            Int       @id @default(autoincrement())
+  payerId       Int
+  payeeId       Int
+  invoiceId     Int
+  amount        Float
+  mode          String
+  transactionId String?
+  status        String    @default("Pending")
+  date          DateTime  @default(now())
+
+  // Relations
+  payer         User      @relation("Payer", fields: [payerId], references: [id])
+  payee         User      @relation("Payee", fields: [payeeId], references: [id])
+  invoice       Invoice   @relation(fields: [invoiceId], references: [id])
+}
+
+model Transport {
+  id          Int       @id @default(autoincrement())
+  orderId     Int       @unique 
+  truckNo     String
+  driverName  String
+  status      String    @default("At Plant")
+  podFile     String?
+
+  order       Order     @relation(fields: [orderId], references: [id])
+}
+
+model Ledger {
+  id          Int       @id @default(autoincrement())
+  partyId     Int
+  debit       Float     @default(0)
+  credit      Float     @default(0)
+  balance     Float     @default(0)
+  description String?
+  date        DateTime  @default(now())
+
+  party       User      @relation(fields: [partyId], references: [id])
+}
