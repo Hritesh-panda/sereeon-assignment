@@ -80,13 +80,23 @@ function App() {
             }
           />
           <Route
-            path="/orders"
+            path="/sales-orders"
             element={
-              <ProtectedRoute roles={["ADMIN", "VENDOR", "CUSTOMER"]}>
+              <ProtectedRoute roles={["ADMIN", "CUSTOMER"]}>
+                <SalesOrders />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/purchase-orders"
+            element={
+              <ProtectedRoute roles={["ADMIN", "VENDOR"]}>
                 <PurchaseOrders />
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/invoices"
             element={

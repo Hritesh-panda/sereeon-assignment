@@ -19,13 +19,18 @@ router.post(
 );
 
 // 🔵 Get all orders (Admin, Customer)
-router.get("/", authenticate, authorizeRoles("ADMIN", "CUSTOMER"), getOrders);
+router.get(
+  "/",
+  authenticate,
+  authorizeRoles("ADMIN", "CUSTOMER", "VENDOR"),
+  getOrders
+);
 
 // 🔍 Get single order
 router.get(
   "/:id",
   authenticate,
-  authorizeRoles("ADMIN", "CUSTOMER"),
+  authorizeRoles("ADMIN", "CUSTOMER", "VENDOR"),
   getOrderById
 );
 
@@ -33,7 +38,7 @@ router.get(
 router.put(
   "/status/:orderId",
   authenticate,
-  authorizeRoles("ADMIN"),
+  authorizeRoles("ADMIN", "VENDOR"),
   updateOrderStatus
 );
 

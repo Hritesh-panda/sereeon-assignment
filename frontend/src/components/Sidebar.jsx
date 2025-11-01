@@ -5,7 +5,6 @@ const Sidebar = () => {
   const { user } = useAuth();
 
   const commonLinks = [
-    { name: "Orders", to: "/orders" },
     { name: "Invoices", to: "/invoices" },
     { name: "Payments", to: "/payments" },
   ];
@@ -15,6 +14,8 @@ const Sidebar = () => {
       { name: "Dashboard", to: "/admin" },
       { name: "Sales Contracts", to: "/sales-contracts" },
       { name: "Purchase Contracts", to: "/purchase-contracts" },
+      { name: "Sales Orders", to: "/sales-orders" },
+      { name: "Purchase Orders", to: "/purchase-orders" },
       { name: "Reports", to: "/reports" },
       { name: "Transport", to: "/transport" },
       { name: "Products", to: "/products" },

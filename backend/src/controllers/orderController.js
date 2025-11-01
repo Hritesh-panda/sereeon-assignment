@@ -90,6 +90,12 @@ export const getOrders = async (req, res) => {
         include: { product: true, contract: true, createdBy: true },
         orderBy: { id: "desc" },
       });
+    } else if (role === "VENDOR") {
+      orders = await prisma.order.findMany({
+        where: { type: "PURCHASE", contract: { partyId: userId } },
+        include: { product: true, contract: true },
+        orderBy: { id: "desc" },
+      });
     } else {
       orders = await prisma.order.findMany({
         where: { createdById: userId },
